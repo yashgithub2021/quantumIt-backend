@@ -106,7 +106,7 @@ exports.GetBlog = catchAsyncError(async (req, res, next) => {
       blogs = await BlogModel.findById(new mongoose.Types.ObjectId(id));
     }
     else {
-      blogs = await BlogModel.find().select('-detailedInsights -keyPoints -keyInsights -quote -author.profileImg -author.socialMedia -author.designation -author.about');
+      blogs = await BlogModel.find();
     }
   } catch (e) {
     return next(
@@ -137,13 +137,15 @@ exports.EditBlog = catchAsyncError(async (req, res, next) => {
     keyPoints,
     keyInsights,
     quote,
-    AuthorName,
-    AuthorDesignation,
-    AuthorAbout,
+    authorName,
+    authorDesignation,
+    authorAbout,
     facebook,
     twitter,
     instagram
   } = req.body;
+
+  console.log(req.body)
 
   const blogImage = req.files?.[0];
   const authorProfile = req.files?.[1];
@@ -177,9 +179,9 @@ exports.EditBlog = catchAsyncError(async (req, res, next) => {
   }
 
   const authorObj = {
-    authorName: AuthorName,
-    designation: AuthorDesignation,
-    about: AuthorAbout,
+    authorName: authorName,
+    designation: authorDesignation,
+    about: authorAbout,
     socialMedia: {
       facebook,
       twitter,
@@ -231,7 +233,7 @@ exports.EditBlog = catchAsyncError(async (req, res, next) => {
 
 
 exports.DeleteBlog = catchAsyncError(async (req, res, next) => {
-  const { id } = req.query;
+  const { id } = req.params;
   try {
     const result = await BlogModel.deleteOne(new mongoose.Types.ObjectId(id));
     if (result.deletedCount)

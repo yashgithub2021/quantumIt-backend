@@ -8,6 +8,6 @@ const {
 } = require("../controllers/blogController");
 const { upload } = require('../utils/aws');
 
-router.route("/blog").post(upload.any(), CreateBlog).get(GetBlog).delete(DeleteBlog).put(EditBlog);
-
+router.route("/blog").post(upload.any(), CreateBlog).get(GetBlog);
+router.route("/blog/:id").put(upload.any(), EditBlog).delete(DeleteBlog)
 module.exports = router;

@@ -136,6 +136,88 @@ exports.GetProject = catchAsyncError(async (req, res, next) => {
   });
 });
 
+exports.EditProject = catchAsyncError(async (req, res, next) => {
+  const { id } = req.params; // Assuming the ID is provided as a URL parameter
+
+  const {
+    name,
+    description,
+    clientName,
+    date,
+    liveLink,
+    category,
+    keyPoints,
+    keyInsights,
+    aboutProject,
+  } = req.body;
+
+  console.log(req.body);
+  const file = req.files?.[0];
+  const fileTwo = req.files?.[1];
+  const fileThree = req.files?.[2];
+
+  // Check if the project exists
+  let project = await ProjectModel.findById(id);
+  if (!project) {
+    return res.status(404).json({
+      success: false,
+      message: 'Project not found',
+    });
+  }
+
+  // Prepare upload promises if files are provided
+  let loc, loc2, loc3;
+  const uploadPromises = [];
+
+  if (file) {
+    uploadPromises.push(uploadImage(file));
+  }
+  if (fileTwo) {
+    uploadPromises.push(uploadImage(fileTwo));
+  }
+  if (fileThree) {
+    uploadPromises.push(uploadImage(fileThree));
+  }
+
+  const [locResult, loc2Result, loc3Result] = await Promise.all(uploadPromises);
+
+  loc = locResult || null;
+  loc2 = loc2Result || null;
+  loc3 = loc3Result || null;
+
+  // Update fields if they are provided in the request
+  if (name) project.name = name;
+  if (description) project.description = description;
+  if (clientName) project.clientName = clientName;
+  if (date) project.date = date;
+  if (liveLink) project.liveLink = liveLink;
+  if (category) project.category = category;
+  if (file) project.image = loc;
+  if (fileTwo) project.imageTwo = loc2;
+  if (fileThree) project.portfolioImage = loc3;
+  if (keyPoints) project.keyPoints = keyPoints;
+  if (keyInsights) project.keyInsights = keyInsights;
+  if (aboutProject) project.aboutProject = aboutProject;
+
+  try {
+    await project.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Updated Successfully",
+      project,
+    });
+  } catch (e) {
+    return next(
+      new ErrorHandler(
+        `There was an error updating your project: ${e.message}`,
+        500,
+      ),
+    );
+  }
+});
+
+
 exports.GetMobileAppProject = catchAsyncError(async (req, res, next) => {
   const { id } = req.query;
   let projects;

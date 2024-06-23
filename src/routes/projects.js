@@ -5,7 +5,8 @@ const {
   GetProject,
   DeleteProject,
   GetMobileAppProject,
-  GetWebAppProject
+  GetWebAppProject,
+  EditProject
 } = require("../controllers/projectsController");
 
 const { upload } = require('../utils/aws');
@@ -17,6 +18,7 @@ router
   .delete(DeleteProject);
 
 router.get('/web-app-projects', GetWebAppProject);
+router.put("/project/:id", upload.any(), EditProject)
 
 router.get('/mobile-app-projects', GetMobileAppProject);
 
