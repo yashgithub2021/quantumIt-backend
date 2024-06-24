@@ -9,6 +9,10 @@ const appSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  description2: {
+    type: String,
+    required: true,
+  },
   clientName: {
     type: String,
     required: true,

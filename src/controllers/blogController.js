@@ -16,9 +16,9 @@ exports.CreateBlog = catchAsyncError(async (req, res, next) => {
     keyPoints,
     keyInsights,
     quote,
-    AuthorName,
-    AuthorDesignation,
-    AuthorAbout,
+    authorName,
+    authorDesignation,
+    authorAbout,
     facebook,
     twitter,
     instagram
@@ -57,10 +57,10 @@ exports.CreateBlog = catchAsyncError(async (req, res, next) => {
   }
 
   const authorObj = {
-    authorName: AuthorName,
+    authorName: authorName,
     profileImg: authorProfileLoc,
-    designation: AuthorDesignation,
-    about: AuthorAbout,
+    designation: authorDesignation,
+    about: authorAbout,
     socialMedia: {
       facebook,
       twitter,

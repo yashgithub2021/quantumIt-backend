@@ -8,6 +8,7 @@ exports.CreateProject = catchAsyncError(async (req, res, next) => {
   const {
     name,
     description,
+    description2,
     clientName,
     date,
     liveLink,
@@ -22,7 +23,7 @@ exports.CreateProject = catchAsyncError(async (req, res, next) => {
   const fileTwo = req.files?.[1];
   const fileThree = req.files?.[2];
 
-  if (!name || !description || !clientName || !date || !liveLink || !category || !keyPoints || !keyInsights || !aboutProject) {
+  if (!name || !description || description2 || !clientName || !date || !liveLink || !category || !keyPoints || !keyInsights || !aboutProject) {
     return res.status(400).json({
       success: false,
       message: 'Empty Fields'
@@ -60,6 +61,7 @@ exports.CreateProject = catchAsyncError(async (req, res, next) => {
       project = new ProjectModel({
         name,
         description,
+        description2,
         clientName,
         date,
         liveLink,
@@ -82,6 +84,7 @@ exports.CreateProject = catchAsyncError(async (req, res, next) => {
     } else {
       if (name) project.name = name;
       if (description) project.description = description;
+      if (description2) project.description2 = description2;
       if (clientName) project.clientName = clientName;
       if (date) project.date = date;
       if (liveLink) project.liveLink = liveLink;
@@ -142,6 +145,7 @@ exports.EditProject = catchAsyncError(async (req, res, next) => {
   const {
     name,
     description,
+    description2,
     clientName,
     date,
     liveLink,
@@ -188,6 +192,7 @@ exports.EditProject = catchAsyncError(async (req, res, next) => {
   // Update fields if they are provided in the request
   if (name) project.name = name;
   if (description) project.description = description;
+  if (description2) project.description2 = description2;
   if (clientName) project.clientName = clientName;
   if (date) project.date = date;
   if (liveLink) project.liveLink = liveLink;
