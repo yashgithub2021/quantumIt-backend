@@ -25,9 +25,10 @@ exports.CreateBlog = catchAsyncError(async (req, res, next) => {
   } = req.body;
 
   const blogImage = req.files?.[0];
-  const authorProfile = req.files?.[1];
+  const blogImage2 = req.files?.[1];
+  const authorProfile = req.files?.[2];
 
-  if (!blogImage || !authorProfile) {
+  if (!blogImage || !authorProfile || !blogImage2) {
     return res.status(400).json({
       success: false,
       message: "Blog image and author profile are required."
@@ -35,6 +36,7 @@ exports.CreateBlog = catchAsyncError(async (req, res, next) => {
   }
 
   const blogImageLoc = await uploadImage(blogImage);
+  const blogImage2Loc = await uploadImage(blogImage2);
   const authorProfileLoc = await uploadImage(authorProfile);
 
   if (
@@ -74,6 +76,7 @@ exports.CreateBlog = catchAsyncError(async (req, res, next) => {
       description,
       category,
       image: blogImageLoc,
+      image2: blogImage2Loc,
       readTime,
       detailedInsights,
       keyPoints,
@@ -148,12 +151,16 @@ exports.EditBlog = catchAsyncError(async (req, res, next) => {
   console.log(req.body)
 
   const blogImage = req.files?.[0];
-  const authorProfile = req.files?.[1];
+  const blogImage2 = req.files?.[1];
+  const authorProfile = req.files?.[2];
 
-  let blogImageLoc, authorProfileLoc;
+  let blogImageLoc, blogImage2Loc, authorProfileLoc;
 
   if (blogImage) {
     blogImageLoc = await uploadImage(blogImage);
+  }
+  if (blogImage2) {
+    blogImage2Loc = await uploadImage(blogImage2);
   }
   if (authorProfile) {
     authorProfileLoc = await uploadImage(authorProfile);
@@ -207,6 +214,9 @@ exports.EditBlog = catchAsyncError(async (req, res, next) => {
     blog.category = category;
     if (blogImageLoc) {
       blog.image = blogImageLoc;
+    }
+    if (blogImage2Loc) {
+      blog.image2 = blogImage2Loc;
     }
     blog.readTime = readTime;
     blog.detailedInsights = detailedInsights;

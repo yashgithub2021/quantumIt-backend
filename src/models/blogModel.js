@@ -17,6 +17,10 @@ const blogSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  image2: {
+    type: String,
+    required: true,
+  },
   readTime: {
     type: String,
     required: true,
