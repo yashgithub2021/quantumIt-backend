@@ -23,10 +23,24 @@ exports.CreateProject = catchAsyncError(async (req, res, next) => {
   const fileTwo = req.files?.[1];
   const fileThree = req.files?.[2];
 
-  if (!name || !description || description2 || !clientName || !date || !liveLink || !category || !keyPoints || !keyInsights || !aboutProject) {
+  if (!name || !description || !description2 || !clientName || !date || !liveLink || !category || !keyPoints || !keyInsights || !aboutProject) {
+    const emptyFields = [];
+
+    if (!name) emptyFields.push('name');
+    if (!description) emptyFields.push('description');
+    if (!description2) emptyFields.push('description2');
+    if (!clientName) emptyFields.push('clientName');
+    if (!date) emptyFields.push('date');
+    if (!liveLink) emptyFields.push('liveLink');
+    if (!category) emptyFields.push('category');
+    if (!keyPoints) emptyFields.push('keyPoints');
+    if (!keyInsights) emptyFields.push('keyInsights');
+    if (!aboutProject) emptyFields.push('aboutProject');
+
     return res.status(400).json({
       success: false,
-      message: 'Empty Fields'
+      message: 'Empty Fields',
+      emptyFields: emptyFields
     });
   }
 
