@@ -1,60 +1,72 @@
-const mongoose = require("mongoose");
+const { Sequelize, DataTypes } = require("sequelize");
+const { db } = require("../config/dbConnect"); // Adjust this path
 
-const blogSchema = mongoose.Schema({
+const Blog = db.define("blogs", {
   title: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048),
+    allowNull: false,
   },
   description: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048),
+    allowNull: false,
   },
   category: {
-    type: Array,
-    required: true,
+    type: DataTypes.ARRAY(DataTypes.STRING(2048)),
+    allowNull: false,
   },
   image: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048),
+    allowNull: false,
   },
   image2: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048),
+    allowNull: false,
   },
   readTime: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048),
+    allowNull: false,
   },
   detailedInsights: {
-    type: String,
-    required: true,
+    type: DataTypes.TEXT,
+    allowNull: false,
   },
   keyPoints: {
-    type: Array,
-    required: true,
+    type: DataTypes.ARRAY(DataTypes.STRING(2048)),
+    allowNull: false,
   },
   keyInsights: {
-    type: Array,
-    required: true,
+    type: DataTypes.ARRAY(DataTypes.STRING(2048)),
+    allowNull: false,
   },
   quote: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048),
+    allowNull: false,
   },
-  author: {
-    type: {
-      authorName: String,
-      profileImg: String,
-      designation: String,
-      about: String,
-      socialMedia: {
-        facebook: String,
-        twitter: String,
-        instagram: String
-      }
+  authorName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  profileImg: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  designation: {
+    type: DataTypes.STRING(2048),
+    allowNull: false,
+  },
+  about: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  socialMedia: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    defaultValue: {
+      facebook: '',
+      twitter: '',
+      instagram: ''
     }
   }
 });
 
-
-module.exports = mongoose.model("blog", blogSchema);
+module.exports = Blog;

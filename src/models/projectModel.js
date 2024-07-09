@@ -1,66 +1,64 @@
-const mongoose = require("mongoose");
+const { Sequelize, DataTypes } = require("sequelize");
+const { db } = require("../config/dbConnect"); // Adjust this path as needed
 
-const appSchema = mongoose.Schema({
+const Project = db.define("projects", {
+  _id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    allowNull: false,
+    primaryKey: true
+  },
   name: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(1024), // Increase capacity
+    allowNull: false,
   },
   description: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048), // Increase capacity
+    allowNull: false,
   },
   description2: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(2048), // Increase capacity
+    allowNull: false,
   },
   clientName: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(512), // Increase capacity
+    allowNull: false,
   },
   date: {
-    type: Date,
-    required: true,
+    type: DataTypes.DATE,
+    allowNull: false,
   },
   liveLink: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING(1024), // Increase capacity
+    allowNull: false,
   },
   category: {
-    type: Array,
-    required: true,
+    type: DataTypes.ARRAY(DataTypes.STRING(512)), // Increase capacity
+    allowNull: false,
   },
   image: {
-    type: String,
+    type: DataTypes.STRING(2048), // Increase capacity
   },
   imageTwo: {
-    type: String,
+    type: DataTypes.STRING(2048), // Increase capacity
   },
   portfolioImage: {
-    type: String
+    type: DataTypes.STRING(2048), // Increase capacity
   },
   keyPoints: {
-    type: Array,
-    required: true,
+    type: DataTypes.ARRAY(DataTypes.STRING(1024)), // Increase capacity
+    allowNull: false,
   },
   keyInsights: {
-    type: Array,
-    required: true,
+    type: DataTypes.ARRAY(DataTypes.STRING(1024)), // Increase capacity
+    allowNull: false,
   },
   aboutProject: {
-    type: String,
-    required: true,
-  }
+    type: DataTypes.STRING(4096), // Increase capacity
+    allowNull: false,
+  },
+}, {
+  timestamps: true
 });
 
-// appSchema.pre("save", function (next) {
-//   if (this.details && this.details.length > 200) {
-//     this.shortDetail = this.details.substring(0, 200);
-//     this.details = this.details;
-//   } else {
-//     this.shortDetail = this.details;
-//     this.details = this.details;
-//   }
-//   next();
-// });
-
-module.exports = mongoose.model("project", appSchema);
+module.exports = Project;

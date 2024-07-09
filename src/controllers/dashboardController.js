@@ -1,18 +1,19 @@
-const BlogModel = require("../models/blogModel");
+const Blog = require("../models/blogModel"); // Adjust paths accordingly
 const ContactusModel = require("../models/contactusModel");
 const ContributorModel = require("../models/contributorModel");
-const catchAsyncError = require("../utils/catchAsyncError");
 const ProjectModel = require("../models/projectModel");
 const FeedbackModel = require("../models/cutomerFeedback");
-const ReviewModel = require("../models/customerModel");
+
+const catchAsyncError = require("../utils/catchAsyncError");
+const Transaction = require("../models/transactionModel");
 
 exports.dashboard = catchAsyncError(async (req, res, next) => {
-    const totalBlogs = BlogModel.countDocuments();
-    const totalQueries = ContactusModel.countDocuments();
-    const totalContributors = ContributorModel.countDocuments();
-    const totalProjects = ProjectModel.countDocuments();
-    const totalFeedbacks = FeedbackModel.countDocuments();
-    const totalReviews = ReviewModel.countDocuments();
+    const totalBlogs = Blog.count();
+    const totalQueries = ContactusModel.count();
+    const totalContributors = ContributorModel.count();
+    const totalProjects = ProjectModel.count();
+    const totalFeedbacks = FeedbackModel.count();
+    const totalTransactions = Transaction.count();
 
     Promise.all([
         totalBlogs,
@@ -20,7 +21,7 @@ exports.dashboard = catchAsyncError(async (req, res, next) => {
         totalContributors,
         totalProjects,
         totalFeedbacks,
-        totalReviews
+        totalTransactions
     ]).then((results) => {
         res.status(200).json({
             totalBlogs: results[0],
@@ -28,7 +29,10 @@ exports.dashboard = catchAsyncError(async (req, res, next) => {
             totalContributors: results[2],
             totalProjects: results[3],
             totalFeedbacks: results[4],
-            totalReviews: results[5]
-        })
-    })
+            totalTransactions: results[5]
+        });
+    }).catch(err => {
+        console.error('Error fetching counts:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    });
 });

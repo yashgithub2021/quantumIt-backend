@@ -3,8 +3,26 @@ const ContactUsModel = require("../models/contactusModel");
 const catchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { uploadFile } = require("../utils/aws");
+const { Sequelize } = require("sequelize");
+const contactUsData = {
+  firstName: 'John',
+  lastName: 'Doe',
+  email: 'john.doe@example.com',
+  companyName: 'Example Company',
+  message: 'This is a test message.',
+  resume: 'https://example.com/path/to/resume.pdf' // Optional resume link
+};
+async function createProject(data) {
+  try {
+    const newProject = await ContactUsModel.create(data);
+    console.log('Project created successfully:', newProject);
+  } catch (error) {
+    console.error('Error creating project:', error);
+  }
+}
 
-exports.CreateContactUsQuery = catchAsyncError(async (req, res, next) => {
+// createProject(contactUsData)
+exports.CreateContactUsQuery = async (req, res, next) => {
   const {
     firstName,
     lastName,
@@ -12,79 +30,98 @@ exports.CreateContactUsQuery = catchAsyncError(async (req, res, next) => {
     companyName,
     message
   } = req.body;
+
   let resumeLink;
   if (req.files.length > 0)
-    resumeLink = await uploadFile(req.files[0]);
-  console.log(resumeLink);
-  const query = new ContactUsModel({
-    firstName,
-    lastName,
-    email,
-    companyName,
-    message,
-    resume: resumeLink
-  });
+    resumeLink = await uploadFile(req.files[0]); // Assuming uploadFile function is defined for file upload
+
   try {
-    await query.save();
+    const query = await ContactUsModel.create({
+      firstName,
+      lastName,
+      email,
+      companyName,
+      message,
+      resume: resumeLink,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Saved Successfully",
+      query,
+    });
   } catch (e) {
-    return res.status(500).json({
+    console.error(e);
+    res.status(500).json({
       success: false,
-      message: `There is some error saving your query with backend for ref. ${e}`
-    })
+      message: `Error saving the query: ${e.message}`,
+    });
   }
+};
 
-  res.status(200).json({
-    success: true,
-    message: "Saved Succcessfully",
-    query,
-  });
-});
-
-exports.GetAllQueries = catchAsyncError(async (req, res, next) => {
+exports.GetAllQueries = async (req, res, next) => {
   const { type, id } = req.query;
   let queries;
+
   try {
     if (id) {
-      queries = await ContactUsModel.findById(id);
-    }
-    else if (type === 'join_us') {
-      queries = await ContactUsModel.find({ resume: { $exists: true, $ne: '' } }).sort({ _id: -1 });
+      queries = await ContactUsModel.findByPk(id);
+    } else if (type === 'join_us') {
+      queries = await ContactUsModel.findAll({
+        where: {
+          resume: {
+            [Sequelize.Op.not]: null, // Ensure resume exists
+          },
+        },
+      });
     } else {
-      queries = await ContactUsModel.find({ resume: { $exists: false, $ne: '' } }).sort({ _id: -1 });
+      queries = await ContactUsModel.findAll({
+        where: {
+          resume: null, // Ensure resume does not exist
+        },
+      });
     }
+
+    res.status(200).json({
+      success: true,
+      message: "Fetched Successfully",
+      queries,
+    });
   } catch (e) {
-    return next(
-      new ErrorHandler(
-        `There is some error getting queries from backend for ref. ${e}`,
-        500,
-      ),
-    );
+    console.error(e);
+    res.status(500).json({
+      success: false,
+      message: `Error fetching queries: ${e.message}`,
+    });
   }
+};
 
-  res.status(200).json({
-    success: true,
-    message: "Fetched Successfully",
-    queries: queries,
-  });
-});
-
-exports.DeleteQuery = catchAsyncError(async (req, res, next) => {
+exports.DeleteQuery = async (req, res, next) => {
   const { id } = req.query;
-  console.log(id);
+
   try {
-    const result = await ContactUsModel.deleteOne(new mongoose.Types.ObjectId(id));
-    console.log(result.deletedCount);
-    if (result.deletedCount)
+    const result = await ContactUsModel.destroy({
+      where: {
+        id: id,
+      },
+    });
+
+    if (result > 0) {
       res.status(200).json({
         success: true,
         message: "Deleted Successfully",
-      }); else {
-      res.status(200).json({
+      });
+    } else {
+      res.status(404).json({
         success: false,
-        message: "Didn't find a matching query",
+        message: "Query not found",
       });
     }
   } catch (e) {
-    return next(new ErrorHandler(`Error While deleting for ref.${e}`, 500));
+    console.error(e);
+    res.status(500).json({
+      success: false,
+      message: `Error deleting query: ${e.message}`,
+    });
   }
-});
+};

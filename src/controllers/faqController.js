@@ -3,8 +3,8 @@ const FaqModel = require('../models/faqModel');
 const catchAsyncError = require('../utils/catchAsyncError');
 const ErrorHandler = require("../utils/ErrorHandler");
 
-exports.CreateFaq = catchAsyncError(async (req, res, next) => {
 
+exports.CreateFaq = async (req, res, next) => {
     const {
         question,
         description,
@@ -15,88 +15,83 @@ exports.CreateFaq = catchAsyncError(async (req, res, next) => {
     } = req.body;
 
     if (!question || !description || !clientName || !keyPoints || !keyInsights || !answer) {
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: 'Empty Fields'
-        })
+        });
     }
 
-    const faq = new FaqModel({
-        question,
-        description,
-        clientName,
-        date: new Date(),
-        keyPoints,
-        keyInsights,
-        answer
-    });
     try {
-        await faq.save();
+        const faq = await FaqModel.create({
+            question,
+            description,
+            clientName,
+            date: new Date(),
+            keyPoints,
+            keyInsights,
+            answer
+        });
+        res.status(200).json({
+            success: true,
+            message: "Saved Successfully",
+            faq,
+        });
     } catch (error) {
-        return next(
-            new ErrorHandler(
-                `There is some error saving your faq with backend for ref. ${error}`,
-                500,
-            ),
-        );
+        return next(new Error(`Error saving FAQ: ${error.message}`));
     }
-    res.status(200).json({
-        success: true,
-        message: "Saved Succcessfully",
-        faq,
-    });
-});
+};
 
-exports.GetFaq = catchAsyncError(async (req, res, next) => {
+exports.GetFaq = async (req, res, next) => {
     const { id } = req.query;
-    let faqs;
 
     try {
         if (id) {
-            const result = await FaqModel.findOne(new mongoose.Types.ObjectId(id));
-            if (result) {
+            const faq = await FaqModel.findByPk(id);
+            if (faq) {
                 res.status(200).json({
                     success: true,
                     message: "Fetched Successfully",
-                    result
+                    faq,
                 });
-            }
-            else {
-                res.status(200).json({
+            } else {
+                res.status(404).json({
                     success: false,
-                    message: "Didn't find a matching query",
+                    message: "FAQ not found",
                 });
             }
         } else {
-            faqs = await FaqModel.find();
+            const faqs = await FaqModel.findAll();
             res.status(200).json({
                 success: true,
                 message: "Fetched Successfully",
-                faqs: faqs,
+                faqs,
             });
         }
     } catch (error) {
-        return next(new ErrorHandler(`Error While fetching for ref.${error}`, 500));
+        return next(new Error(`Error fetching FAQ: ${error.message}`));
     }
-});
+};
 
-exports.DeleteFaq = catchAsyncError(async (req, res, next) => {
+
+exports.DeleteFaq = async (req, res, next) => {
     const { id } = req.query;
 
     try {
-        const result = await FaqModel.deleteOne(new mongoose.Types.ObjectId(id));
-        console.log(result.deletedCount);
-        if (result.deletedCount)
-            res.status(200).json({
-                success: true,
-                message: "Deleted Successfully",
-            }); else {
-            res.status(200).json({
+        const faq = await FaqModel.findByPk(id);
+        if (!faq) {
+            return res.status(404).json({
                 success: false,
-                message: "Didn't find a matching query",
+                message: "FAQ not found",
             });
         }
-    } catch (e) {
-        return next(new ErrorHandler(`Error While deleting for ref.${e}`, 500));
+
+        await faq.destroy();
+
+        res.status(200).json({
+            success: true,
+            message: "Deleted Successfully",
+        });
+    } catch (error) {
+        return next(new Error(`Error deleting FAQ: ${error.message}`));
     }
-});
+};

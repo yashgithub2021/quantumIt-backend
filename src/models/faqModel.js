@@ -1,34 +1,35 @@
-const mongoose = require('mongoose');
+const { Sequelize, DataTypes } = require("sequelize");
+const { db } = require("../config/dbConnect"); // Adjust this path as needed
 
-const faqSchema = mongoose.Schema({
+const FAQ = db.define("faqs", {
     question: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     description: {
-        type: String,
-        required: true
+        type: DataTypes.TEXT,
+        allowNull: false,
     },
     clientName: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     date: {
-        type: Date,
-        required: true
+        type: DataTypes.DATE,
+        allowNull: false,
     },
     keyPoints: {
-        type: Array,
-        required: true
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: false,
     },
     keyInsights: {
-        type: Array,
-        required: true
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: false,
     },
     answer: {
-        type: String,
-        required: true
+        type: DataTypes.TEXT,
+        allowNull: false,
     },
 });
 
-module.exports = mongoose.model("faq", faqSchema);
+module.exports = FAQ;

@@ -1,30 +1,45 @@
-const mongoose = require("mongoose");
-const validator = require("validator");
+const { Sequelize, DataTypes } = require("sequelize");
+const { db } = require("../config/dbConnect"); // Adjust this path
 
-const formSchema = mongoose.Schema({
+const ContactUsForm = db.define("contactusforms", {
+  _id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    allowNull: false,
+    primaryKey: true
+  },
   firstName: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   lastName: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   email: {
-    type: String,
-    required: true,
-    validate: [validator.isEmail, "Please provide a valid email"],
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: {
+        args: true,
+        msg: "Please provide a valid email",
+      },
+    },
   },
   companyName: {
-    type: String,
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   message: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   resume: {
-    type: String
-  }
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model("contactUsForm", formSchema);
+module.exports = ContactUsForm;

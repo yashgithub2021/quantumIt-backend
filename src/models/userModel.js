@@ -1,39 +1,52 @@
-const mongoose = require('mongoose');
+const { Sequelize, DataTypes } = require("sequelize");
+const { db } = require("../config/dbConnect"); // Adjust this path as needed
 const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
-const userSchema = mongoose.Schema({
+const User = db.define("users", {
     email: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     name: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     role: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     password: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     }
+}, {
+    hooks: {
+        beforeCreate: async (user) => {
+            if (user.password) {
+                const salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(user.password, salt);
+            }
+        }
+    },
+    instanceMethods: {
+        validPassword: async function (password) {
+            return await bcrypt.compare(password, this.password);
+        },
+        generateToken: async function () {
+            const token = await jwt.sign({ id: this.id, email: this.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            return token;
+        }
+    },
+    timestamps: true
 });
-
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password, 10);
-});
-
-userSchema.methods.comparePassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password);
+// Instance method to validate password
+User.prototype.validPassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.getJWTToken = function () {
-    return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_TOKEN_EXPIRE,
-    });
+// Instance method to generate JWT token
+User.prototype.generateToken = function () {
+    return jwt.sign({ id: this.id, email: this.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
-
-module.exports = mongoose.model("user", userSchema);
+module.exports = User;

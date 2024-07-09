@@ -1,18 +1,19 @@
-const mongoose = require('mongoose');
+const { Sequelize, DataTypes } = require("sequelize");
+const { db } = require("../config/dbConnect"); // Adjust this path as needed
 
-const contributorSchema = mongoose.Schema({
+const Contributors = db.define("contributors", {
     name: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     profileImage: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     numberOfArticles: {
-        type: Number,
-        required: true
-    }
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
 });
 
-module.exports = mongoose.model('contributor', contributorSchema);
+module.exports = Contributors;

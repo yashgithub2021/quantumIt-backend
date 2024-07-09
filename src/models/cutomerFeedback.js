@@ -1,28 +1,33 @@
-const mongoose = require('mongoose');
+const { Sequelize, DataTypes } = require("sequelize");
+const { db } = require("../config/dbConnect"); // Adjust this path as needed
 
-const feedbackSchema = mongoose.Schema({
+const Feedbacks = db.define("feedbacks", {
+    _id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+        primaryKey: true
+    },
     name: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     profileImg: {
-        type: String,
-        required: true
-    },
-    stars: {
-        type: Number,
-        required: true
-    },
-    message: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     designation: {
-        type: String,
-        required: true
-    }
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    stars: {
+        type: DataTypes.INTEGER, // Assuming rating is an integer
+        allowNull: false,
+    },
+    message: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
 });
 
-
-module.exports = mongoose.model("feedback", feedbackSchema);
-
+module.exports = Feedbacks;
