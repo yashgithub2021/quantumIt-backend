@@ -24,6 +24,8 @@ async function createProject(data) {
   }
 }
 
+
+
 // createProject(contactUsData)
 exports.CreateContactUsQuery = async (req, res, next) => {
   const {
@@ -58,18 +60,75 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     const transporter = nodemailer.createTransport({
       service: 'Gmail', // or any other email service you use
       auth: {
-        user: 'jnu.unknown@gmail.com', // replace with your email
-        pass: 'oiprafelnmuwhudu' // replace with your email password
+        user: process.env.SMTP_EMAIL, // replace with your email
+        pass: process.env.SMTP_PASS // replace with your email password
       }
     });
 
+    const createEmailTemplate = (subject, content) => `
+      <html>
+      <head>
+        <style>
+          .email-container {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+          }
+          .email-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .email-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+          }
+          .email-body {
+            margin-bottom: 20px;
+          }
+          .email-footer {
+            font-size: 12px;
+            color: #888888;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="email-content">
+            <div class="email-header">${subject}</div>
+            <div class="email-body">${content}</div>
+            <div class="email-footer">This email was sent from ${email}</div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const contentSales = `
+      <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Company:</strong> ${companyName}</p>
+      <p><strong>Message:</strong> ${message}</p>
+    `;
+
+    const contentHR = `
+      <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Message:</strong> ${message}</p>
+    `;
+
+
     // Send email if about is present
     if (about) {
+      if (!companyName)
+        return next(new ErrorHandler("Company Name is Required"), 401)
       const mailOptionsSales = {
         from: email, // replace with your email
-        to: 'sales@quantumitinnovation.com',
-        subject: about,
-        text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nMessage: ${message}`
+        to: 'yashbarge007@gmail.com',
+        subject: `New Enquiry for ${about}`,
+        html: createEmailTemplate(`New Enquiry for ${about}`, contentSales)
       };
 
       transporter.sendMail(mailOptionsSales, (error, info) => {
@@ -85,9 +144,9 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     if (resumeFile) {
       const mailOptionsHR = {
         from: email,
-        to: 'hr@quantumitinnovation.com',
+        to: 'yashbarge007@gmail.com',
         subject: 'New Resume Submission',
-        text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nCompany: ${companyName}\nMessage: ${message}`,
+        html: createEmailTemplate('New Resume Submission', contentHR),
         attachments: [
           {
             filename: resumeFile.originalname,
