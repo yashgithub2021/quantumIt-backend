@@ -30,6 +30,10 @@ const ContactUsForm = db.define("contactusforms", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  about: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   message: {
     type: DataTypes.STRING,
     allowNull: false,

@@ -41,7 +41,7 @@ const Transaction = db.define("Transaction", {
         allowNull: false,
     },
     amount: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
         allowNull: false,
     },
     order_id: {

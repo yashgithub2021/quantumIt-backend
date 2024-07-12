@@ -4,6 +4,9 @@ const catchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { uploadFile } = require("../utils/aws");
 const { Sequelize } = require("sequelize");
+const nodemailer = require('nodemailer');
+
+
 const contactUsData = {
   firstName: 'John',
   lastName: 'Doe',
@@ -28,12 +31,17 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     lastName,
     email,
     companyName,
-    message
+    message,
+    about
   } = req.body;
 
   let resumeLink;
-  if (req.files.length > 0)
-    resumeLink = await uploadFile(req.files[0]); // Assuming uploadFile function is defined for file upload
+  let resumeFile;
+
+  if (req.files && req.files.length > 0) {
+    resumeFile = req.files[0];
+    resumeLink = await uploadFile(resumeFile);
+  }
 
   try {
     const query = await ContactUsModel.create({
@@ -43,7 +51,59 @@ exports.CreateContactUsQuery = async (req, res, next) => {
       companyName,
       message,
       resume: resumeLink,
+      about, // Add about field to the query
     });
+
+    // Nodemailer transporter setup
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail', // or any other email service you use
+      auth: {
+        user: 'jnu.unknown@gmail.com', // replace with your email
+        pass: 'oiprafelnmuwhudu' // replace with your email password
+      }
+    });
+
+    // Send email if about is present
+    if (about) {
+      const mailOptionsSales = {
+        from: email, // replace with your email
+        to: 'sales@quantumitinnovation.com',
+        subject: about,
+        text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nMessage: ${message}`
+      };
+
+      transporter.sendMail(mailOptionsSales, (error, info) => {
+        if (error) {
+          console.error('Error sending email to sales:', error);
+        } else {
+          console.log('Email sent to sales:', info.response);
+        }
+      });
+    }
+
+    // Send email to HR if resume is present
+    if (resumeFile) {
+      const mailOptionsHR = {
+        from: email,
+        to: 'hr@quantumitinnovation.com',
+        subject: 'New Resume Submission',
+        text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nCompany: ${companyName}\nMessage: ${message}`,
+        attachments: [
+          {
+            filename: resumeFile.originalname,
+            content: resumeFile.buffer
+          }
+        ]
+      };
+
+      transporter.sendMail(mailOptionsHR, (error, info) => {
+        if (error) {
+          console.error('Error sending email to HR:', error);
+        } else {
+          console.log('Email sent to HR:', info.response);
+        }
+      });
+    }
 
     res.status(200).json({
       success: true,

@@ -9,6 +9,6 @@ const {
 
 router.post("/create-order", initiatePayment)
 router.post("/payment-success", paymentSuccess)
-router.post("/get-transactions", getAllTransactions)
+router.get("/get-transactions", getAllTransactions)
 router.post("/handleCCAvenueResponse", handleCCAvenueResponse)
 module.exports = router;
