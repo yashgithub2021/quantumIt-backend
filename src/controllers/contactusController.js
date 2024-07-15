@@ -126,7 +126,7 @@ exports.CreateContactUsQuery = async (req, res, next) => {
         return next(new ErrorHandler("Company Name is Required"), 401)
       const mailOptionsSales = {
         from: email, // replace with your email
-        to: 'yashbarge007@gmail.com',
+        to: 'sales@quantumitinnovation.com',
         subject: `New Enquiry for ${about}`,
         html: createEmailTemplate(`New Enquiry for ${about}`, contentSales)
       };
@@ -144,7 +144,7 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     if (resumeFile) {
       const mailOptionsHR = {
         from: email,
-        to: 'yashbarge007@gmail.com',
+        to: 'hr@quantumitinnovation.com',
         subject: 'New Resume Submission',
         html: createEmailTemplate('New Resume Submission', contentHR),
         attachments: [
