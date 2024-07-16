@@ -11,7 +11,7 @@ const Blog = db.define("blogs", {
     allowNull: false,
   },
   category: {
-    type: DataTypes.ARRAY(DataTypes.TEXT),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   image: {
@@ -26,47 +26,10 @@ const Blog = db.define("blogs", {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  detailedInsights: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  keyPoints: {
-    type: DataTypes.ARRAY(DataTypes.TEXT),
-    allowNull: false,
-  },
-  keyInsights: {
-    type: DataTypes.ARRAY(DataTypes.TEXT),
-    allowNull: false,
-  },
   quote: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  authorName: {
-    type: DataTypes.STRING, // Typically author names don't need unlimited length
-    allowNull: false,
-  },
-  profileImg: {
-    type: DataTypes.STRING, // Typically URLs don't need unlimited length
-    allowNull: false,
-  },
-  designation: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  about: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  socialMedia: {
-    type: DataTypes.JSON,
-    allowNull: false,
-    defaultValue: {
-      facebook: '',
-      twitter: '',
-      instagram: ''
-    }
-  }
 });
 
 module.exports = Blog;
