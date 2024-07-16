@@ -130,7 +130,9 @@ exports.GetBlog = async (req, res, next) => {
     if (id) {
       blogs = await BlogModel.findByPk(id);
     } else {
-      blogs = await BlogModel.findAll();
+      blogs = await BlogModel.findAll({
+        order: [['createdAt', 'DESC']]
+      });
     }
     res.status(200).json({
       success: true,
