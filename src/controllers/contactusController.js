@@ -34,8 +34,13 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     email,
     companyName,
     message,
-    about
+    about,
+    ip_address,
+    location
   } = req.body;
+
+  if (!ip_address || !location)
+    return next(new ErrorHandler("Ip Address and Location is required"))
 
   let resumeLink;
   let resumeFile;
@@ -54,6 +59,8 @@ exports.CreateContactUsQuery = async (req, res, next) => {
       message,
       resume: resumeLink,
       about, // Add about field to the query
+      ip_address,
+      location
     });
 
     // Nodemailer transporter setup
@@ -192,12 +199,14 @@ exports.GetAllQueries = async (req, res, next) => {
             [Sequelize.Op.not]: null, // Ensure resume exists
           },
         },
+        order: [['createdAt', 'DESC']]
       });
     } else {
       queries = await ContactUsModel.findAll({
         where: {
           resume: null, // Ensure resume does not exist
         },
+        order: [['createdAt', 'DESC']]
       });
     }
 
