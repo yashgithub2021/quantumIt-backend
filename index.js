@@ -31,6 +31,7 @@ const faq = require("./src/routes/faq");
 const user = require("./src/routes/user");
 const feedback = require("./src/routes/feedback");
 const transactions = require("./src/routes/transaction");
+const category = require("./src/routes/category")
 const catchAsyncError = require("./src/utils/catchAsyncError");
 
 // Encryption function
@@ -84,6 +85,7 @@ app.use("/api/faq", faq);
 app.use("/api/users", user);
 app.use("/api/feedback", feedback);
 app.use("/api/transactions", transactions);
+app.use("/api/categories", category);
 app.post('/api/transactions/handleCCAvenueResponse', handleCCAvenueResponse);
 
 app.use((err, req, res, next) => {

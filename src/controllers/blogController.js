@@ -144,6 +144,21 @@ exports.GetBlog = async (req, res, next) => {
   }
 };
 
+exports.getBlogByCat = catchAsyncError(async (req, res, next) => {
+  const { category } = req.body
+
+  if (!category)
+    return next(new ErrorHandler("Category is required", 400))
+
+  const blogs = await BlogModel.findAll({
+    where: {
+      category: category
+    }
+  })
+
+  res.status(200).json({ success: true, blogs })
+})
+
 exports.EditBlog = async (req, res, next) => {
   const { id } = req.params;
   const {
