@@ -42,6 +42,14 @@ const ContactUsForm = db.define("contactusforms", {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  ip_address: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  location: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
 }, {
   timestamps: true
 });
