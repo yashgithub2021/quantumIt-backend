@@ -118,12 +118,16 @@ exports.CreateContactUsQuery = async (req, res, next) => {
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Company:</strong> ${companyName}</p>
       <p><strong>Message:</strong> ${message}</p>
+      <p><strong>IP Address:</strong> ${ip_address}</p>
+      <p><strong>Location:</strong> ${location}</p>
     `;
 
     const contentHR = `
       <p><strong>Name:</strong> ${firstName} ${lastName}</p>
       <p><strong>Email:</strong> ${email}</p>
       <p><strong>Message:</strong> ${message}</p>
+      <p><strong>IP Address:</strong> ${ip_address}</p>
+      <p><strong>Location:</strong> ${location}</p>
     `;
 
 
