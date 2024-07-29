@@ -124,14 +124,23 @@ exports.CreateBlog = async (req, res, next) => {
 
 
 exports.GetBlog = async (req, res, next) => {
-  const { id } = req.query;
+  const { id, resultPerPage, currentPage } = req.query;
+  let limit = 10;
+  let offset = 0;
+
+  if (resultPerPage && currentPage) {
+    limit = parseInt(resultPerPage) || 10;
+    offset = (parseInt(currentPage) - 1) * limit;
+  }
   try {
     let blogs;
     if (id) {
       blogs = await BlogModel.findByPk(id);
     } else {
       blogs = await BlogModel.findAll({
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'DESC']],
+        limit,
+        offset,
       });
     }
     res.status(200).json({
@@ -145,7 +154,7 @@ exports.GetBlog = async (req, res, next) => {
 };
 
 exports.getBlogByCat = catchAsyncError(async (req, res, next) => {
-  const { category } = req.body
+  const { category } = req.query
 
   if (!category)
     return next(new ErrorHandler("Category is required", 400))
