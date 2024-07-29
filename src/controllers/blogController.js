@@ -117,6 +117,10 @@ exports.CreateBlog = async (req, res, next) => {
     });
   } catch (e) {
     console.error(e);
+    if (e instanceof Error) {
+      console.error('Error message:', e.message);
+      console.error('Error stack:', e.stack);
+    }
     return next(new ErrorHandler(`Error while saving the blog: ${e.message}`, 500));
   }
 };
