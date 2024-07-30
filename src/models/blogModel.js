@@ -1,7 +1,12 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { db } = require("../config/dbConnect"); // Adjust this path
 
-const Blog = db.define("blogs", {
+const Blog = db.define("blogstest", {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: Sequelize.UUIDV4,
+    primaryKey: true
+  },
   title: {
     type: DataTypes.TEXT,
     allowNull: false,
