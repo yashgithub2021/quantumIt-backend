@@ -74,7 +74,7 @@ exports.createRealEstate = catchAsyncError(async (req, res, next) => {
 
   const mailOptions = {
     from: email,
-    to: "quantuminnovationpro@gmail.com@gmail.com",
+    to: "quantuminnovationpro@gmail.com",
     subject: `Real Estate Enquiry`,
     html: createEmailTemplate(`Real Estate Enquiry`, content),
   };
