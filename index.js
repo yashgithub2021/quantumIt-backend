@@ -25,6 +25,7 @@ const {
 } = require("./src/controllers/transactionsController");
 const blogs = require("./src/routes/blogs");
 const contactus = require("./src/routes/contactus");
+const realEstate = require("./src/routes/realEstate");
 const projects = require("./src/routes/projects");
 const reviews = require("./src/routes/reviews");
 const team = require("./src/routes/team");
@@ -87,6 +88,7 @@ app.post(
 
 app.use("/api/blogs", blogs);
 app.use("/api/contactus", contactus);
+app.use("/api/real-estates", realEstate);
 app.use("/api/projects", projects);
 app.use("/api/reviews", reviews);
 app.use("/api/team", team);

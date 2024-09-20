@@ -4,27 +4,24 @@ const catchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { uploadFile } = require("../utils/aws");
 const { Sequelize } = require("sequelize");
-const nodemailer = require('nodemailer');
-
+const nodemailer = require("nodemailer");
 
 const contactUsData = {
-  firstName: 'John',
-  lastName: 'Doe',
-  email: 'john.doe@example.com',
-  companyName: 'Example Company',
-  message: 'This is a test message.',
-  resume: 'https://example.com/path/to/resume.pdf' // Optional resume link
+  firstName: "John",
+  lastName: "Doe",
+  email: "john.doe@example.com",
+  companyName: "Example Company",
+  message: "This is a test message.",
+  resume: "https://example.com/path/to/resume.pdf", // Optional resume link
 };
 async function createProject(data) {
   try {
     const newProject = await ContactUsModel.create(data);
-    console.log('Project created successfully:', newProject);
+    console.log("Project created successfully:", newProject);
   } catch (error) {
-    console.error('Error creating project:', error);
+    console.error("Error creating project:", error);
   }
 }
-
-
 
 // createProject(contactUsData)
 exports.CreateContactUsQuery = async (req, res, next) => {
@@ -32,15 +29,16 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     firstName,
     lastName,
     email,
+    phone_no,
     companyName,
     message,
     about,
     ip_address,
-    location
+    location,
   } = req.body;
 
   if (!ip_address || !location)
-    return next(new ErrorHandler("Ip Address and Location is required"))
+    return next(new ErrorHandler("Ip Address and Location is required"));
 
   let resumeLink;
   let resumeFile;
@@ -55,21 +53,22 @@ exports.CreateContactUsQuery = async (req, res, next) => {
       firstName,
       lastName,
       email,
+      phone_no,
       companyName,
       message,
       resume: resumeLink,
       about, // Add about field to the query
       ip_address,
-      location
+      location,
     });
 
     // Nodemailer transporter setup
     const transporter = nodemailer.createTransport({
-      service: 'Gmail', // or any other email service you use
+      service: "Gmail", // or any other email service you use
       auth: {
         user: process.env.SMTP_EMAIL, // replace with your email
-        pass: process.env.SMTP_PASS // replace with your email password
-      }
+        pass: process.env.SMTP_PASS, // replace with your email password
+      },
     });
 
     const createEmailTemplate = (subject, content) => `
@@ -116,6 +115,7 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     const contentSales = `
       <p><strong>Name:</strong> ${firstName} ${lastName}</p>
       <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone Number:</strong> ${phone_no}</p>
       <p><strong>Company:</strong> ${companyName}</p>
       <p><strong>Message:</strong> ${message}</p>
       <p><strong>IP Address:</strong> ${ip_address}</p>
@@ -125,28 +125,28 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     const contentHR = `
       <p><strong>Name:</strong> ${firstName} ${lastName}</p>
       <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone Number:</strong> ${phone_no}</p>
       <p><strong>Message:</strong> ${message}</p>
       <p><strong>IP Address:</strong> ${ip_address}</p>
       <p><strong>Location:</strong> ${location}</p>
     `;
 
-
     // Send email if about is present
     if (about) {
       if (!companyName)
-        return next(new ErrorHandler("Company Name is Required"), 401)
+        return next(new ErrorHandler("Company Name is Required"), 401);
       const mailOptionsSales = {
         from: email, // replace with your email
-        to: 'sales@quantumitinnovation.com',
+        to: "sales@quantumitinnovation.com",
         subject: `New Enquiry for ${about}`,
-        html: createEmailTemplate(`New Enquiry for ${about}`, contentSales)
+        html: createEmailTemplate(`New Enquiry for ${about}`, contentSales),
       };
 
       transporter.sendMail(mailOptionsSales, (error, info) => {
         if (error) {
-          console.error('Error sending email to sales:', error);
+          console.error("Error sending email to sales:", error);
         } else {
-          console.log('Email sent to sales:', info.response);
+          console.log("Email sent to sales:", info.response);
         }
       });
     }
@@ -155,22 +155,22 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     if (resumeFile) {
       const mailOptionsHR = {
         from: email,
-        to: 'hr@quantumitinnovation.com',
-        subject: 'New Resume Submission',
-        html: createEmailTemplate('New Resume Submission', contentHR),
+        to: "hr@quantumitinnovation.com",
+        subject: "New Resume Submission",
+        html: createEmailTemplate("New Resume Submission", contentHR),
         attachments: [
           {
             filename: resumeFile.originalname,
-            content: resumeFile.buffer
-          }
-        ]
+            content: resumeFile.buffer,
+          },
+        ],
       };
 
       transporter.sendMail(mailOptionsHR, (error, info) => {
         if (error) {
-          console.error('Error sending email to HR:', error);
+          console.error("Error sending email to HR:", error);
         } else {
-          console.log('Email sent to HR:', info.response);
+          console.log("Email sent to HR:", info.response);
         }
       });
     }
@@ -196,21 +196,21 @@ exports.GetAllQueries = async (req, res, next) => {
   try {
     if (id) {
       queries = await ContactUsModel.findByPk(id);
-    } else if (type === 'join_us') {
+    } else if (type === "join_us") {
       queries = await ContactUsModel.findAll({
         where: {
           resume: {
             [Sequelize.Op.not]: null, // Ensure resume exists
           },
         },
-        order: [['createdAt', 'DESC']]
+        order: [["createdAt", "DESC"]],
       });
     } else {
       queries = await ContactUsModel.findAll({
         where: {
           resume: null, // Ensure resume does not exist
         },
-        order: [['createdAt', 'DESC']]
+        order: [["createdAt", "DESC"]],
       });
     }
 
