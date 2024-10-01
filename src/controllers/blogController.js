@@ -99,6 +99,17 @@ exports.CreateBlog = async (req, res, next) => {
     });
   }
 
+  // Define max file size (2MB in bytes)
+  const maxSize = 2 * 1024 * 1024; // 2MB
+
+  // Check image sizes
+  if (blogImage.size > maxSize || blogImage2.size > maxSize) {
+    return res.status(400).json({
+      success: false,
+      message: "Each image size should not exceed 2MB."
+    });
+  }
+
   try {
     const blog = await BlogModel.create({
       title,
