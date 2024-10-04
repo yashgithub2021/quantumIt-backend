@@ -86,6 +86,7 @@ app.post(
   })
 );
 
+//gateways
 app.use("/api/blogs", blogs);
 app.use("/api/contactus", contactus);
 app.use("/api/real-estates", realEstate);
