@@ -62,30 +62,30 @@ function decrypt(data, workingKey) {
   return decrypted;
 }
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/index.html"));
-});
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "public/index.html"));
+// });
 
-app.post(
-  "/initiate-payment",
-  catchAsyncError(async (req, res) => {
-    const { amount, currency, order_id } = req.body;
+// app.post(
+//   "/initiate-payment",
+//   catchAsyncError(async (req, res) => {
+//     const { amount, currency, order_id } = req.body;
 
-    console.log();
-    const paymentData = `merchant_id=${process.env.CCAVENUE_MERCHANT_ID}&order_id=${order_id}&amount=${amount}&currency=${currency}&redirect_url=${process.env.REDIRECT_URL}&cancel_url=${process.env.CANCEL_URL}&language=EN`;
+//     console.log();
+//     const paymentData = `merchant_id=${process.env.CCAVENUE_MERCHANT_ID}&order_id=${order_id}&amount=${amount}&currency=${currency}&redirect_url=${process.env.REDIRECT_URL}&cancel_url=${process.env.CANCEL_URL}&language=EN`;
 
-    const encryptedData = encrypt(
-      paymentData,
-      process.env.CCAVENUE_WORKING_KEY
-    );
-    console.log(encryptedData);
+//     const encryptedData = encrypt(
+//       paymentData,
+//       process.env.CCAVENUE_WORKING_KEY
+//     );
+//     console.log(encryptedData);
 
-    res.render("paymentPage", {
-      encRequest: encryptedData,
-      access_code: process.env.CCAVENUE_ACCESS_CODE,
-    });
-  })
-);
+//     res.render("paymentPage", {
+//       encRequest: encryptedData,
+//       access_code: process.env.CCAVENUE_ACCESS_CODE,
+//     });
+//   })
+// );
 
 //gateways
 app.use("/api/blogs", blogs);
