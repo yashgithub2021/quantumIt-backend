@@ -8,7 +8,7 @@ const nodeCCAvenue = require("node-ccavenue"); // Ensure this is installed
 
 const app = express();
 
-dotenv.config({ path: "./src/config/local.env" });
+dotenv.config({ path: "./src/config/.env" });
 // dotenv.config({ path: "./src/config/local.env" });
 const { connectDatabase } = require("./src/config/dbConnect");
 app.use(express.json());
@@ -36,7 +36,8 @@ const feedback = require("./src/routes/feedback");
 const transactions = require("./src/routes/transaction");
 const category = require("./src/routes/category");
 const catchAsyncError = require("./src/utils/catchAsyncError");
-const appDevForm = require("./src/routes/appDev")
+const appDevForm = require("./src/routes/appDev");
+const logger = require("./src/utils/logger");
 // Encryption function
 function encrypt(data, workingKey) {
   const key = crypto.createHash("md5").update(workingKey).digest();
@@ -103,7 +104,7 @@ app.use("/api/appDev", appDevForm);
 app.post("/api/transactions/handleCCAvenueResponse", handleCCAvenueResponse);
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.error(err.stack);
   res.status(500).json({
     success: false,
     message: err.message || "Internal Server Error",
