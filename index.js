@@ -36,7 +36,7 @@ const feedback = require("./src/routes/feedback");
 const transactions = require("./src/routes/transaction");
 const category = require("./src/routes/category");
 const catchAsyncError = require("./src/utils/catchAsyncError");
-
+const appDevForm = require("./src/routes/appDev")
 // Encryption function
 function encrypt(data, workingKey) {
   const key = crypto.createHash("md5").update(workingKey).digest();
@@ -99,6 +99,7 @@ app.use("/api/users", user);
 app.use("/api/feedback", feedback);
 app.use("/api/transactions", transactions);
 app.use("/api/categories", category);
+app.use("/api/appDev", appDevForm);
 app.post("/api/transactions/handleCCAvenueResponse", handleCCAvenueResponse);
 
 app.use((err, req, res, next) => {
