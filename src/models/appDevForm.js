@@ -14,6 +14,14 @@ const AppDevForms = db.define(
             type: DataTypes.STRING,
             allowNull: true,
         },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        url: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
         contact: {
             type: DataTypes.STRING,
             allowNull: true,

@@ -44,68 +44,69 @@ const createEmailTemplate = (subject, content) => `
 `;
 
 exports.Create = async (req, res, next) => {
-    const { name, contact, message } = req.body;
+  const { name, email, contact, message } = req.body;
 
-    // Validate fields
-    if (!name || !contact || !message) {
-        return res.status(400).json({
-            success: false,
-            message: "All fields are required",
-        });
-    }
-
-    // Nodemailer transporter setup
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com', // SMTP host for Gmail
-        port: 587, // SMTP port for Gmail
-        secure: false, // True for port 465, false for 587
-        auth: {
-            user: process.env.SMTP_EMAIL, // Your Gmail address
-            pass: process.env.SMTP_PASS, // Your Gmail app password
-        },
+  // Validate fields
+  if (!name || !contact || !message || !email) {
+    return res.status(400).json({
+      success: false,
+      message: "All fields are required",
     });
+  }
+
+  // Nodemailer transporter setup
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com', // SMTP host for Gmail
+    port: 587, // SMTP port for Gmail
+    secure: false, // True for port 465, false for 587
+    auth: {
+      user: process.env.SMTP_EMAIL, // Your Gmail address
+      pass: process.env.SMTP_PASS, // Your Gmail app password
+    },
+  });
 
 
-    const contentSales = `
+  const contentSales = `
       <p><strong>Name:</strong> ${name} </p>
-      <p><strong>Contact:</strong> ${contact}</p>
+      <p><strong>Email:</strong> ${email} </p>
+      <p><strong>Phone:</strong> ${contact}</p>
       <p><strong>Message:</strong> ${message}</p>
     `;
 
-    try {
-        // Save form to database
-        const form = await AppDevForms.create(req.body);
-        res.status(200).json({ success: true, message: "Saved Successfully!" });
+  try {
+    // Save form to database
+    const form = await AppDevForms.create(req.body);
+    res.status(200).json({ success: true, message: "Saved Successfully!" });
 
-        const mailOptionsSales = {
-            from: process.env.SMTP_EMAIL, // Your email (environment variable)
-            to: "sales@quantumitinnovation.com",
-            subject: `New Landing Page Enquiry`,
-            html: createEmailTemplate(`New Landing Page Enquiry`, contentSales, process.env.SMTP_EMAIL),
-        };
+    const mailOptionsSales = {
+      from: process.env.SMTP_EMAIL, // Your email (environment variable)
+      to: "sales@quantumitinnovation.com",
+      subject: `New Landing Page Enquiry`,
+      html: createEmailTemplate(`New Landing Page Enquiry`, contentSales, process.env.SMTP_EMAIL),
+    };
 
-        // Send email
-        transporter.sendMail(mailOptionsSales, (error, info) => {
-            if (error) {
-                console.error("Error sending email to sales:", error);
-            } else {
-                console.log("Email sent to sales:", info.response);
-            }
-        });
-    } catch (error) {
-        next(new ErrorHandler('Error saving form or sending email', 500)); // Send 500 Internal Server Error
-    }
+    // Send email
+    transporter.sendMail(mailOptionsSales, (error, info) => {
+      if (error) {
+        console.error("Error sending email to sales:", error);
+      } else {
+        console.log("Email sent to sales:", info.response);
+      }
+    });
+  } catch (error) {
+    next(new ErrorHandler('Error saving form or sending email', 500)); // Send 500 Internal Server Error
+  }
 };
 
 exports.GetAllQueries = async (req, res, next) => {
-    try {
-        // Fetch all queries from the database
-        const queries = await AppDevForms.findAll();
+  try {
+    // Fetch all queries from the database
+    const queries = await AppDevForms.findAll();
 
-        // Respond with the data
-        res.status(200).json({ success: true, queries });
-    } catch (error) {
-        console.error("Error fetching queries: ", error);
-        return next(new ErrorHandler("Error fetching queries", 500));
-    }
+    // Respond with the data
+    res.status(200).json({ success: true, queries });
+  } catch (error) {
+    console.error("Error fetching queries: ", error);
+    return next(new ErrorHandler("Error fetching queries", 500));
+  }
 };
