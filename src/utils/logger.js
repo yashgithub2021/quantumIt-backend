@@ -1,7 +1,9 @@
 // src/utils/logger.js
+const dotenv = require("dotenv");
 const winston = require('winston');
 const nodemailer = require('nodemailer');
 require('winston-mail');
+dotenv.config({ path: "./src/config/.env" });
 
 const logger = winston.createLogger({
     level: 'info',
