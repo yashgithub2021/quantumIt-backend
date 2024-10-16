@@ -8,6 +8,7 @@ const nodeCCAvenue = require("node-ccavenue"); // Ensure this is installed
 
 const app = express();
 
+//config file
 dotenv.config({ path: "./src/config/.env" });
 // dotenv.config({ path: "./src/config/local.env" });
 const { connectDatabase } = require("./src/config/dbConnect");
