@@ -20,12 +20,14 @@ const logger = winston.createLogger({
     ],
 });
 
-// Set up nodemailer for sending emails
+// Set up nodemailer for sending emails via Gmail SMTP
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587, // TLS port
+    secure: false, // Use TLS, not SSL
     auth: {
-        user: process.env.SMTP_EMAIL, // Add your email to .env
-        pass: process.env.SMTP_PASS, // Add your email password to .env
+        user: process.env.SMTP_EMAIL, // Your email from .env
+        pass: process.env.SMTP_PASS,  // Your app-specific password from .env
     },
 });
 
