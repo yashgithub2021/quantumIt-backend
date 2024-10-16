@@ -44,7 +44,7 @@ const createEmailTemplate = (subject, content) => `
 `;
 
 exports.Create = async (req, res, next) => {
-  const { name, email, contact, message } = req.body;
+  const { name, email, contact, message, ip_address, location } = req.body;
 
   // Validate fields
   if (!name || !contact || !message || !email) {
@@ -71,7 +71,11 @@ exports.Create = async (req, res, next) => {
       <p><strong>Email:</strong> ${email} </p>
       <p><strong>Phone:</strong> ${contact}</p>
       <p><strong>Message:</strong> ${message}</p>
+      <p><strong>Ip Address:</strong> ${ip_address}</p>
+      <p><strong>Location:</strong> ${location}</p>
     `;
+
+  console.log("sales: ", contentSales)
 
   try {
     // Save form to database

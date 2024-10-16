@@ -33,7 +33,7 @@ exports.CreateMember = catchAsyncError(async (req, res, next) => {
 exports.GetAllMembers = catchAsyncError(async (req, res, next) => {
   let members;
   try {
-    members = await MemberModel.find();
+    members = await MemberModel.findAll();
   } catch (e) {
     return next(
       new ErrorHandler(
@@ -55,15 +55,15 @@ exports.DeleteMember = catchAsyncError(async (req, res, next) => {
   try {
     const result = await ContactUsModel.deleteOne(new mongoose.Types.ObjectId(id));
     if (result.deletedCount)
-    res.status(200).json({
-      success: true,
-      message: "Deleted Successfully",
-    }); else {
-    res.status(200).json({
-      success: false,
-      message: "Didn't find a matching query",
-    });
-  }
+      res.status(200).json({
+        success: true,
+        message: "Deleted Successfully",
+      }); else {
+      res.status(200).json({
+        success: false,
+        message: "Didn't find a matching query",
+      });
+    }
   } catch (e) {
     return next(new ErrorHandler(`Error While deleting for ref.${e}`, 500));
   }
