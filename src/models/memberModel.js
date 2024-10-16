@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const { db } = require("../config/dbConnect"); // Adjust this path as needed
 
+//member
 const Member = db.define("members", {
   id: {
     type: DataTypes.UUID,
