@@ -4,7 +4,7 @@ const winston = require('winston');
 const nodemailer = require('nodemailer');
 require('winston-mail');
 dotenv.config({ path: "./src/config/.env" });
-
+const { transporter } = require('../controllers/appDevForms.controller')
 const logger = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
@@ -20,16 +20,8 @@ const logger = winston.createLogger({
     ],
 });
 
-// Set up nodemailer for sending emails via Gmail SMTP
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587, // TLS port
-    secure: false, // Use TLS, not SSL
-    auth: {
-        user: process.env.SMTP_EMAIL, // Your email from .env
-        pass: process.env.SMTP_PASS,  // Your app-specific password from .env
-    },
-});
+console.log("SMTPPP", process.env.SMTP_EMAIL)
+console.log("SMTPPP", process.env.SMTP_PASS)
 
 // Winston Mail Transport to send errors via email
 logger.add(

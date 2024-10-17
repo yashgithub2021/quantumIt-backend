@@ -55,7 +55,7 @@ exports.Create = async (req, res, next) => {
   }
 
   // Nodemailer transporter setup
-  const transporter = nodemailer.createTransport({
+  exports.transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com', // SMTP host for Gmail
     port: 587, // SMTP port for Gmail
     secure: false, // True for port 465, false for 587

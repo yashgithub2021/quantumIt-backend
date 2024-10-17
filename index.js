@@ -104,7 +104,8 @@ app.use("/api/appDev", appDevForm);
 app.post("/api/transactions/handleCCAvenueResponse", handleCCAvenueResponse);
 
 app.use((err, req, res, next) => {
-  logger.error(err.stack);
+  // logger.error(err.stack);
+  console.log(err.stack)
   res.status(500).json({
     success: false,
     message: err.message || "Internal Server Error",
