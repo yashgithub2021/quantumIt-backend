@@ -35,6 +35,18 @@ const Blog = db.define("blogstest", {
     type: DataTypes.TEXT,
     allowNull: false,
   },
+  custom_url: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  meta_title: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  meta_desc: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  }
 });
 
 module.exports = Blog;

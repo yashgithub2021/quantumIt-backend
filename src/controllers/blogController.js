@@ -80,7 +80,10 @@ exports.CreateBlog = async (req, res, next) => {
     description,
     category,
     readTime,
-    quote
+    quote,
+    custom_url,
+    meta_title,
+    meta_desc,
   } = req.body;
 
   if (!title || !description || !category || !readTime || !quote)
@@ -119,6 +122,9 @@ exports.CreateBlog = async (req, res, next) => {
       image2: await uploadImage(blogImage2),
       readTime,
       quote,
+      custom_url,
+      meta_title,
+      meta_desc,
     })
 
     res.status(200).json({
@@ -191,6 +197,9 @@ exports.EditBlog = async (req, res, next) => {
     category,
     readTime,
     quote,
+    custom_url,
+    meta_title,
+    meta_desc,
   } = req.body;
 
   const files = req.files || [];
@@ -230,6 +239,9 @@ exports.EditBlog = async (req, res, next) => {
       image2: blogImage2Loc || blog.image2,
       readTime: readTime || blog.readTime,
       quote: quote || blog.quote,
+      custom_url: custom_url || blog.custom_url,
+      meta_title: meta_title || blog.meta_title,
+      meta_desc: meta_desc || blog.meta_desc,
     });
 
     res.status(200).json({
