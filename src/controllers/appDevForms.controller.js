@@ -44,10 +44,10 @@ const createEmailTemplate = (subject, content) => `
 `;
 
 exports.Create = async (req, res, next) => {
-  const { name, email, contact, message, ip_address, location, url, query } = req.body;
+  const { name, email, message, ip_address, location, url, query } = req.body;
 
   // Validate fields
-  if (!name || !contact || !message || !email) {
+  if (!name || !message || !email) {
     return res.status(400).json({
       success: false,
       message: "All fields are required",
@@ -70,7 +70,6 @@ exports.Create = async (req, res, next) => {
     contentSales = `
       <p><strong>Name:</strong> ${name} </p>
       <p><strong>Email:</strong> ${email} </p>
-      <p><strong>Phone:</strong> ${contact}</p>
       <p><strong>Website:</strong> ${url}</p>
       <p><strong>Message:</strong> ${message}</p>
       <p><strong>Ip Address:</strong> ${ip_address}</p>
@@ -81,7 +80,6 @@ exports.Create = async (req, res, next) => {
     contentSales = `
     <p><strong>Name:</strong> ${name} </p>
         <p><strong>Email:</strong> ${email} </p>
-        <p><strong>Phone:</strong> ${contact}</p>
         <p><strong>Message:</strong> ${message}</p>
         <p><strong>Ip Address:</strong> ${ip_address}</p>
         <p><strong>Location:</strong> ${location}</p>
