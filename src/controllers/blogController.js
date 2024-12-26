@@ -71,6 +71,17 @@ async function createProject(data) {
 // createProject(blog3)
 // createProject(blog4)
 // createProject(blog5)
+exports.uploadImage = async (req, res, next) => {
+  const image = req.file
+
+  try {
+    const imageUrl = await uploadImage(image)
+    console.log(imageUrl)
+    res.status(200).json({ success: true, imageUrl })
+  } catch (error) {
+    return next(new ErrorHandler("Failed to upload image", 502))
+  }
+}
 
 exports.CreateBlog = async (req, res, next) => {
   console.log('req.files:', req.files); // Debugging log

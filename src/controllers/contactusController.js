@@ -37,8 +37,8 @@ exports.CreateContactUsQuery = async (req, res, next) => {
     location,
   } = req.body;
 
-  if (!ip_address || !location)
-    return next(new ErrorHandler("Ip Address and Location is required"));
+  // if (!ip_address || !location)
+  //   return next(new ErrorHandler("Ip Address and Location is required"));
 
   let resumeLink;
   let resumeFile;
@@ -58,8 +58,8 @@ exports.CreateContactUsQuery = async (req, res, next) => {
       message,
       resume: resumeLink,
       about, // Add about field to the query
-      ip_address,
-      location,
+      ip_address: ip_address ? ip_address : '',
+      location: location ? location : '',
     });
 
     // Nodemailer transporter setup
