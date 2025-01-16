@@ -32,6 +32,10 @@ const Project = db.define("projects", {
     type: DataTypes.STRING(1024), // Increase capacity
     allowNull: false,
   },
+  iosLink: {
+    type: DataTypes.STRING, // Increase capacity
+    allowNull: true,
+  },
   category: {
     type: DataTypes.ARRAY(DataTypes.STRING(512)), // Increase capacity
     allowNull: false,

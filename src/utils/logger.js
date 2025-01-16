@@ -4,7 +4,17 @@ const winston = require('winston');
 const nodemailer = require('nodemailer');
 require('winston-mail');
 dotenv.config({ path: "./src/config/.env" });
-const { transporter } = require('../controllers/appDevForms.controller')
+
+transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com', // SMTP host for Gmail
+    port: 587, // SMTP port for Gmail
+    secure: false, // True for port 465, false for 587
+    auth: {
+        user: process.env.SMTP_EMAIL, // Your Gmail address
+        pass: process.env.SMTP_PASS, // Your Gmail app password
+    },
+});
+
 const logger = winston.createLogger({
     level: 'info',
     format: winston.format.combine(

@@ -44,10 +44,10 @@ const createEmailTemplate = (subject, content) => `
 `;
 
 exports.Create = async (req, res, next) => {
-  const { name, email, contact, message, ip_address, location } = req.body;
+  const { name, email, message, ip_address, location, url, query, contact } = req.body;
 
   // Validate fields
-  if (!name || !contact || !message || !email) {
+  if (!name || !message || !email || !contact) {
     return res.status(400).json({
       success: false,
       message: "All fields are required",
@@ -55,7 +55,7 @@ exports.Create = async (req, res, next) => {
   }
 
   // Nodemailer transporter setup
-  exports.transporter = nodemailer.createTransport({
+  transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com', // SMTP host for Gmail
     port: 587, // SMTP port for Gmail
     secure: false, // True for port 465, false for 587
@@ -64,16 +64,31 @@ exports.Create = async (req, res, next) => {
       pass: process.env.SMTP_PASS, // Your Gmail app password
     },
   });
+  let contentSales
 
-
-  const contentSales = `
+  if (url) {
+    contentSales = `
       <p><strong>Name:</strong> ${name} </p>
       <p><strong>Email:</strong> ${email} </p>
-      <p><strong>Phone:</strong> ${contact}</p>
+      <p><strong>Phone:</strong> ${contact} </p>
+      <p><strong>Website:</strong> ${url}</p>
       <p><strong>Message:</strong> ${message}</p>
       <p><strong>Ip Address:</strong> ${ip_address}</p>
       <p><strong>Location:</strong> ${location}</p>
-    `;
+
+    `
+  } else {
+    contentSales = `
+    <p><strong>Name:</strong> ${name} </p>
+        <p><strong>Email:</strong> ${email} </p>
+        <p><strong>Phone:</strong> ${contact} </p>
+        <p><strong>Message:</strong> ${message}</p>
+        <p><strong>Ip Address:</strong> ${ip_address}</p>
+        <p><strong>Location:</strong> ${location}</p>
+        `
+  }
+
+
 
   console.log("sales: ", contentSales)
 
@@ -84,9 +99,9 @@ exports.Create = async (req, res, next) => {
 
     const mailOptionsSales = {
       from: process.env.SMTP_EMAIL, // Your email (environment variable)
-      to: "sales@quantumitinnovation.com",
-      subject: `New Landing Page Enquiry`,
-      html: createEmailTemplate(`New Landing Page Enquiry`, contentSales, process.env.SMTP_EMAIL),
+      to: "sales@quantumitinnovation.com, prins.quantumitinnovation@gmail.com, yashbarge007@gmail.com",
+      subject: query,
+      html: createEmailTemplate(query, contentSales, process.env.SMTP_EMAIL),
     };
 
     // Send email
@@ -98,6 +113,7 @@ exports.Create = async (req, res, next) => {
       }
     });
   } catch (error) {
+    console.log(error)
     next(new ErrorHandler('Error saving form or sending email', 500)); // Send 500 Internal Server Error
   }
 };
