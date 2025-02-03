@@ -41,7 +41,7 @@ const ContactUsForm = db.define(
       allowNull: true,
     },
     message: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     resume: {
