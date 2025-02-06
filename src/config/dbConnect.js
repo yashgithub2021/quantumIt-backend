@@ -10,6 +10,14 @@ console.log({ database, username, password, host, dialect });
 const sequelize = new Sequelize(database, username, password, {
   host,
   dialect,
+  pool: {
+    max: 20,
+    min: 5,
+    acquire: 60000,
+    idle: 10000,
+    evict: 15000,
+  },
+  login: false,
   dialectOptions: {
     ssl: {
       require: true,
