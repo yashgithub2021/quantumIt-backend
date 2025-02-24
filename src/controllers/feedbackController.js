@@ -51,11 +51,13 @@ async function createProject(data) {
 // createProject(feedbackDavid)
 
 exports.CreateFeedback = catchAsyncError(async (req, res, next) => {
-    const { name, stars, message, designation } = req.body;
+    const { name, stars, message, designation, link } = req.body;
 
     let profileImageLink;
+    let logo;
     if (req.files && req.files.length > 0) {
         profileImageLink = await uploadImage(req.files[0]);
+        logo = await uploadImage(req.files[1]);
     }
 
     try {
@@ -65,6 +67,8 @@ exports.CreateFeedback = catchAsyncError(async (req, res, next) => {
             stars,
             message,
             designation,
+            logo: logo,
+            link
         });
 
         res.status(200).json({
@@ -108,11 +112,19 @@ exports.GetFeedback = catchAsyncError(async (req, res, next) => {
 });
 exports.UpdateFeedback = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
-    const { name, stars, message, designation } = req.body;
+    const { name, stars, message, designation, link } = req.body;
 
+    console.log(req.files)
     let profileImageLink;
+    let logo;
     if (req.files && req.files.length > 0) {
-        profileImageLink = await uploadImage(req.files[0]);
+        for (const file of req.files) {
+            if (file.fieldname === 'firstFile') {
+                profileImageLink = await uploadImage(file);
+            } else if (file.fieldname === 'secondFile') {
+                logo = await uploadImage(file);
+            }
+        }
     }
 
     try {
@@ -128,8 +140,12 @@ exports.UpdateFeedback = catchAsyncError(async (req, res, next) => {
         feedback.stars = stars;
         feedback.message = message;
         feedback.designation = designation;
+        feedback.link = link
         if (profileImageLink) {
             feedback.profileImg = profileImageLink;
+        }
+        if (logo) {
+            feedback.logo = logo
         }
 
         await feedback.save();
@@ -152,7 +168,7 @@ exports.DeleteFeedback = catchAsyncError(async (req, res, next) => {
     try {
         const result = await FeedbackModel.destroy({
             where: {
-                id: id,
+                _id: id,
             },
         });
 

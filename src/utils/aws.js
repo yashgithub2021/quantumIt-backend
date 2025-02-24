@@ -14,9 +14,10 @@ const s3Client = new S3Client({
 });
 
 exports.uploadImage = (file) => {
+    console.log(file.originalname)
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: 'profile_pictures/' + encodeToHttpLink(file.originalname),
+        Key: 'profile_pictures/' + encodeToHttpLink(file?.originalname),
         Body: file.buffer,
         ContentType: file.mimetype
     };

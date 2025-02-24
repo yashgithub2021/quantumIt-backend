@@ -28,6 +28,16 @@ const Feedbacks = db.define("feedbacks", {
         type: DataTypes.TEXT,
         allowNull: false,
     },
+    link: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    logo: {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 });
+
+Feedbacks.sync({ alter: true })
 
 module.exports = Feedbacks;
