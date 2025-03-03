@@ -35,6 +35,10 @@ const Feedbacks = db.define("feedbacks", {
     logo: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    category: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 });
 

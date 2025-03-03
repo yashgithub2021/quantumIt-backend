@@ -51,7 +51,7 @@ async function createProject(data) {
 // createProject(feedbackDavid)
 
 exports.CreateFeedback = catchAsyncError(async (req, res, next) => {
-    const { name, stars, message, designation, link } = req.body;
+    const { name, stars, message, designation, link, category } = req.body;
 
     let profileImageLink;
     let logo;
@@ -68,7 +68,8 @@ exports.CreateFeedback = catchAsyncError(async (req, res, next) => {
             message,
             designation,
             logo: logo,
-            link
+            link,
+            category: category.trim()
         });
 
         res.status(200).json({
@@ -99,7 +100,11 @@ exports.GetFeedback = catchAsyncError(async (req, res, next) => {
                 });
             }
         } else {
-            const feedbacks = await FeedbackModel.findAll();
+            const feedbacks = await FeedbackModel.findAll(
+                {
+                    order: [['createdAt', 'DESC']]
+                }
+            );
             res.status(200).json({
                 success: true,
                 message: 'Fetched Successfully',
@@ -112,7 +117,7 @@ exports.GetFeedback = catchAsyncError(async (req, res, next) => {
 });
 exports.UpdateFeedback = catchAsyncError(async (req, res, next) => {
     const { id } = req.params;
-    const { name, stars, message, designation, link } = req.body;
+    const { name, stars, message, designation, link, category } = req.body;
 
     console.log(req.files)
     let profileImageLink;
@@ -141,6 +146,7 @@ exports.UpdateFeedback = catchAsyncError(async (req, res, next) => {
         feedback.message = message;
         feedback.designation = designation;
         feedback.link = link
+        feedback.category = category.trim()
         if (profileImageLink) {
             feedback.profileImg = profileImageLink;
         }
